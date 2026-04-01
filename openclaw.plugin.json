@@ -10,16 +10,19 @@
     "harvestflow_evaluate",
     "harvestflow_review"
   ],
-  "config": {
-    "HARVESTFLOW_API_URL": {
-      "type": "string",
-      "default": "http://localhost:3001",
-      "description": "HarvestFlow backend API URL"
-    },
-    "HARVESTFLOW_API_KEY": {
-      "type": "string",
-      "default": "",
-      "description": "API Key for authentication (optional)"
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "HARVESTFLOW_API_URL": {
+        "type": "string",
+        "default": "http://localhost:3001",
+        "description": "HarvestFlow backend API URL"
+      },
+      "HARVESTFLOW_API_KEY": {
+        "type": "string",
+        "default": "",
+        "description": "API Key for authentication (optional)"
+      }
     }
   }
 }

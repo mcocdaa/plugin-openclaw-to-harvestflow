@@ -9,12 +9,22 @@
     "dev": "tsc --watch",
     "prepublishOnly": "npm run build"
   },
-  "keywords": ["openclaw", "harvestflow", "agent", "extension"],
+  "keywords": [
+    "openclaw",
+    "harvestflow",
+    "agent",
+    "extension"
+  ],
   "openclaw": {
-    "extensions": ["dist/index.js"]
+    "extensions": [
+      "dist/index.js"
+    ]
   },
   "dependencies": {
-    "axios": "^1.6.0"
+    "@sinclair/typebox": "^0.34.49",
+    "axios": "^1.6.0",
+    "openclaw": "^2026.3.31",
+    "typebox": "^1.1.12"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
