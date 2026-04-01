@@ -1,4 +1,5 @@
 {
+  "id": "harvestflow",
   "name": "harvestflow",
   "version": "1.0.0",
   "description": "HarvestFlow integration for OpenClaw Agents",
