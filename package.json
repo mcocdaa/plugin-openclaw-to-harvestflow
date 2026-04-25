@@ -1,0 +1,13 @@
+{
+  "name": "harvestflow",
+  "version": "1.0.0",
+  "description": "HarvestFlow session data collection and curation integration for OpenClaw",
+  "type": "module",
+  "main": "src/index.ts",
+  "keywords": ["harvestflow", "openclaw", "plugin", "session", "curation"],
+  "author": "HarvestFlow",
+  "license": "MIT",
+  "openclaw": {
+    "extensions": ["./src/index.ts"]
+  }
+}

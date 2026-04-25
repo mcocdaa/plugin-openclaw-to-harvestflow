@@ -1,0 +1,21 @@
+{
+  "id": "harvestflow",
+  "name": "HarvestFlow Plugin",
+  "version": "1.0.0",
+  "description": "HarvestFlow session data collection and curation integration for OpenClaw",
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "HARVESTFLOW_API_URL": {
+        "type": "string",
+        "default": "http://localhost:3001",
+        "description": "HarvestFlow API base URL"
+      },
+      "HARVESTFLOW_API_KEY": {
+        "type": "string",
+        "default": "",
+        "description": "API Key for authentication (optional)"
+      }
+    }
+  }
+}
