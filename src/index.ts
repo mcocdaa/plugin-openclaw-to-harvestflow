@@ -3,7 +3,8 @@
  * Registers 4 agent tools for HarvestFlow session management
  */
 
-const DEFAULT_BASE_URL = "http://localhost:3001";
+const DEFAULT_BASE_URL = "http://localhost:3000";
+const API_PREFIX = "/api/v1";
 
 /**
  * HTTP request helper for HarvestFlow API
@@ -15,7 +16,7 @@ async function apiRequest(
   body?: object,
   apiKey?: string
 ): Promise<unknown> {
-  const url = `${baseUrl}${path}`;
+  const url = `${baseUrl}${API_PREFIX}${path}`;
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (apiKey) {
     headers["Authorization"] = `Bearer ${apiKey}`;
@@ -95,12 +96,12 @@ export default function (api: any) {
     },
     async execute(_id: string, params: any) {
       if (params.stats === true || params.stats === "true") {
-        const result = await apiRequest(baseUrl, "GET", "/api/v1/sessions/stats", undefined, apiKey);
+        const result = await apiRequest(baseUrl, "GET", "/sessions/stats", undefined, apiKey);
         return { content: [{ type: "text", text: JSON.stringify(result) }] };
       }
 
       if (params.session_id) {
-        const result = await apiRequest(baseUrl, "GET", `/api/v1/sessions/${params.session_id}`, undefined, apiKey);
+        const result = await apiRequest(baseUrl, "GET", `/sessions/${params.session_id}`, undefined, apiKey);
         return { content: [{ type: "text", text: JSON.stringify(result) }] };
       }
 
@@ -109,7 +110,7 @@ export default function (api: any) {
       qs.set("page", String(params.page || 1));
       qs.set("page_size", String(params.page_size || 20));
 
-      const result = await apiRequest(baseUrl, "GET", `/api/v1/sessions?${qs.toString()}`, undefined, apiKey);
+      const result = await apiRequest(baseUrl, "GET", `/sessions?${qs.toString()}`, undefined, apiKey);
       return { content: [{ type: "text", text: JSON.stringify(result) }] };
     },
   });
@@ -141,8 +142,9 @@ export default function (api: any) {
       const action = params.action;
 
       if (action === "scan") {
-        const body = params.folder_path ? { folder_path: params.folder_path } : {};
-        const result = await apiRequest(baseUrl, "POST", "/api/v1/collector/scan", body, apiKey);
+        const qs = new URLSearchParams();
+        if (params.folder_path) qs.set("folder_path", params.folder_path);
+        const result = await apiRequest(baseUrl, "GET", `/collector/scan?${qs.toString()}`, undefined, apiKey);
         return { content: [{ type: "text", text: JSON.stringify(result) }] };
       }
 
@@ -150,13 +152,13 @@ export default function (api: any) {
         if (!params.file_path) {
           throw new Error("Missing required parameter: file_path");
         }
-        const result = await apiRequest(baseUrl, "POST", "/api/v1/collector/import", { file_path: params.file_path }, apiKey);
+        const result = await apiRequest(baseUrl, "POST", "/collector/import", { file_path: params.file_path }, apiKey);
         return { content: [{ type: "text", text: JSON.stringify(result) }] };
       }
 
       if (action === "import_all") {
         const body = params.folder_path ? { folder_path: params.folder_path } : {};
-        const result = await apiRequest(baseUrl, "POST", "/api/v1/collector/import_all", body, apiKey);
+        const result = await apiRequest(baseUrl, "POST", "/collector/import-all", body, apiKey);
         return { content: [{ type: "text", text: JSON.stringify(result) }] };
       }
 
@@ -192,14 +194,14 @@ export default function (api: any) {
       const action = params.action || "evaluate";
 
       if (action === "status") {
-        const result = await apiRequest(baseUrl, "GET", "/api/v1/curator/status", undefined, apiKey);
+        const result = await apiRequest(baseUrl, "GET", "/curator/status", undefined, apiKey);
         return { content: [{ type: "text", text: JSON.stringify(result) }] };
       }
 
       const scope = params.scope || "single";
 
       if (scope === "all") {
-        const result = await apiRequest(baseUrl, "POST", "/api/v1/curator/evaluate_all", {}, apiKey);
+        const result = await apiRequest(baseUrl, "POST", "/curator/evaluate-all", {}, apiKey);
         return { content: [{ type: "text", text: JSON.stringify(result) }] };
       }
 
@@ -207,7 +209,7 @@ export default function (api: any) {
         throw new Error("Missing required parameter: session_id");
       }
 
-      const result = await apiRequest(baseUrl, "POST", `/api/v1/curator/evaluate/${params.session_id}`, {}, apiKey);
+      const result = await apiRequest(baseUrl, "POST", `/curator/evaluate/${params.session_id}`, {}, apiKey);
       return { content: [{ type: "text", text: JSON.stringify(result) }] };
     },
   });
@@ -263,7 +265,7 @@ export default function (api: any) {
         const qs = new URLSearchParams();
         qs.set("page", String(page));
         qs.set("page_size", String(pageSize));
-        const result = await apiRequest(baseUrl, "GET", `/api/v1/reviewer/pending?${qs.toString()}`, undefined, apiKey);
+        const result = await apiRequest(baseUrl, "GET", `/reviewer/pending?${qs.toString()}`, undefined, apiKey);
         return { content: [{ type: "text", text: JSON.stringify(result) }] };
       }
 
@@ -274,7 +276,7 @@ export default function (api: any) {
         const body: any = {};
         if (params.notes) body.notes = params.notes;
         if (params.score !== undefined) body.score = Number(params.score);
-        const result = await apiRequest(baseUrl, "POST", `/api/v1/reviewer/approve/${params.session_id}`, body, apiKey);
+        const result = await apiRequest(baseUrl, "POST", `/reviewer/approve/${params.session_id}`, body, apiKey);
         return { content: [{ type: "text", text: JSON.stringify(result) }] };
       }
 
@@ -285,7 +287,7 @@ export default function (api: any) {
         const body: any = {};
         if (params.notes) body.notes = params.notes;
         if (params.score !== undefined) body.score = Number(params.score);
-        const result = await apiRequest(baseUrl, "POST", `/api/v1/reviewer/reject/${params.session_id}`, body, apiKey);
+        const result = await apiRequest(baseUrl, "POST", `/reviewer/reject/${params.session_id}`, body, apiKey);
         return { content: [{ type: "text", text: JSON.stringify(result) }] };
       }
 
@@ -293,7 +295,7 @@ export default function (api: any) {
         if (!params.session_ids || !Array.isArray(params.session_ids)) {
           throw new Error("Missing or invalid parameter: session_ids (must be array)");
         }
-        const result = await apiRequest(baseUrl, "POST", "/api/v1/reviewer/batch/approve", { session_ids: params.session_ids }, apiKey);
+        const result = await apiRequest(baseUrl, "POST", "/reviewer/batch/approve", { session_ids: params.session_ids }, apiKey);
         return { content: [{ type: "text", text: JSON.stringify(result) }] };
       }
 
@@ -301,7 +303,7 @@ export default function (api: any) {
         if (!params.session_ids || !Array.isArray(params.session_ids)) {
           throw new Error("Missing or invalid parameter: session_ids (must be array)");
         }
-        const result = await apiRequest(baseUrl, "POST", "/api/v1/reviewer/batch/reject", { session_ids: params.session_ids }, apiKey);
+        const result = await apiRequest(baseUrl, "POST", "/reviewer/batch/reject", { session_ids: params.session_ids }, apiKey);
         return { content: [{ type: "text", text: JSON.stringify(result) }] };
       }
 
