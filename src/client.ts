@@ -64,25 +64,27 @@ export class HarvestFlowClient {
   }
 
   async getStats(): Promise<StatsResponse> {
-    const response = await this.client.get('/api/v1/sessions/stats');
+    const response = await this.client.get('/api/v1/stats');
     return response.data;
   }
 
   // Collector Methods
   async scanFolder(folderPath?: string): Promise<ScanResponse> {
     const params = folderPath ? { folder_path: folderPath } : {};
-    const response = await this.client.post('/api/v1/collector/scan', params);
+    const response = await this.client.get('/api/v1/collector/scan', { params });
     return response.data;
   }
 
   async importSession(filePath: string): Promise<ImportResponse> {
-    const response = await this.client.post('/api/v1/collector/import', { file_path: filePath });
+    const response = await this.client.post('/api/v1/collector/import', null, {
+      params: { file_path: filePath }
+    });
     return response.data;
   }
 
   async importAll(folderPath?: string): Promise<ImportAllResponse> {
     const params = folderPath ? { folder_path: folderPath } : {};
-    const response = await this.client.post('/api/v1/collector/import_all', params);
+    const response = await this.client.post('/api/v1/collector/import-all', null, { params });
     return response.data;
   }
 
@@ -93,7 +95,7 @@ export class HarvestFlowClient {
   }
 
   async evaluateAll(): Promise<EvaluateAllResponse> {
-    const response = await this.client.post('/api/v1/curator/evaluate_all');
+    const response = await this.client.post('/api/v1/curator/evaluate-all');
     return response.data;
   }
 
@@ -111,31 +113,29 @@ export class HarvestFlowClient {
   }
 
   async approveSession(sessionId: string, notes?: string, score?: number): Promise<ReviewResponse> {
-    const response = await this.client.post(`/api/v1/reviewer/approve/${sessionId}`, {
-      notes,
-      score
+    const response = await this.client.post(`/api/v1/reviewer/approve/${sessionId}`, null, {
+      params: { notes, score }
     });
     return response.data;
   }
 
   async rejectSession(sessionId: string, notes?: string, score?: number): Promise<ReviewResponse> {
-    const response = await this.client.post(`/api/v1/reviewer/reject/${sessionId}`, {
-      notes,
-      score
+    const response = await this.client.post(`/api/v1/reviewer/reject/${sessionId}`, null, {
+      params: { notes, score }
     });
     return response.data;
   }
 
   async batchApprove(sessionIds: string[]): Promise<BatchReviewResponse> {
-    const response = await this.client.post('/api/v1/reviewer/batch/approve', {
-      session_ids: sessionIds
+    const response = await this.client.post('/api/v1/reviewer/batch-approve', null, {
+      params: { session_ids: sessionIds.join(',') }
     });
     return response.data;
   }
 
   async batchReject(sessionIds: string[]): Promise<BatchReviewResponse> {
-    const response = await this.client.post('/api/v1/reviewer/batch/reject', {
-      session_ids: sessionIds
+    const response = await this.client.post('/api/v1/reviewer/batch-reject', null, {
+      params: { session_ids: sessionIds.join(',') }
     });
     return response.data;
   }

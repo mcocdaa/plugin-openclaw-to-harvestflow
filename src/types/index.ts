@@ -11,21 +11,26 @@ export interface ListParams {
 }
 
 export interface Session {
-  id: string;
   session_id: string;
+  file_path: string;
   status: string;
-  source: string;
   quality_auto_score?: number;
   quality_manual_score?: number;
+  agent_role?: string;
+  task_type?: string;
+  tools_used?: string[];
+  tags?: string[];
+  created_at?: string;
+  updated_at?: string;
+  content?: any;
   [key: string]: any;
 }
 
 export interface SessionListResponse {
-  items: Session[];
+  sessions: Session[];
   total: number;
   page: number;
   page_size: number;
-  pages: number;
 }
 
 export interface StatsResponse {
@@ -33,11 +38,13 @@ export interface StatsResponse {
   raw_sessions: number;
   approved_sessions: number;
   rejected_sessions: number;
-  avg_auto_score: number;
   curated_sessions: number;
+  reviewed_sessions: number;
+  avg_auto_score: number;
 }
 
 export interface ScanResponse {
+  folder_path?: string;
   files_found: number;
   files: string[];
 }
@@ -45,45 +52,49 @@ export interface ScanResponse {
 export interface ImportResponse {
   success: boolean;
   session_id: string;
-  message: string;
 }
 
 export interface ImportAllResponse {
-  total_files: number;
+  total: number;
   imported: number;
+  skipped: number;
   failed: number;
   failed_files: string[];
+  session_ids?: string[];
+  skipped_ids?: string[];
 }
 
 export interface EvaluateResponse {
   session_id: string;
-  quality_auto_score: number;
-  evaluation_status: string;
+  score: number;
+  is_high_value: boolean;
+  tags: string[];
+  tools_used: string[];
   evaluation_details?: any;
 }
 
 export interface EvaluateAllResponse {
-  total_pending: number;
-  evaluated: number;
-  failed: number;
+  total: number;
+  high_value: number;
+  low_value: number;
+  results: EvaluateResponse[];
 }
 
 export interface PendingResponse {
-  items: Session[];
+  sessions: Session[];
   total: number;
   page: number;
   page_size: number;
 }
 
 export interface ReviewResponse {
-  session_id: string;
-  status: string;
-  message: string;
+  success: boolean;
+  session: any;
 }
 
 export interface BatchReviewResponse {
-  total_processed: number;
+  total: number;
   success: number;
   failed: number;
-  results: ReviewResponse[];
+  results: Array<{ session_id: string; success: boolean }>;
 }
