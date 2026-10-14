@@ -127,16 +127,12 @@ export class HarvestFlowClient {
   }
 
   async batchApprove(sessionIds: string[]): Promise<BatchReviewResponse> {
-    const response = await this.client.post('/api/v1/reviewer/batch-approve', null, {
-      params: { session_ids: sessionIds.join(',') }
-    });
+    const response = await this.client.post('/api/v1/reviewer/batch-approve', sessionIds);
     return response.data;
   }
 
   async batchReject(sessionIds: string[]): Promise<BatchReviewResponse> {
-    const response = await this.client.post('/api/v1/reviewer/batch-reject', null, {
-      params: { session_ids: sessionIds.join(',') }
-    });
+    const response = await this.client.post('/api/v1/reviewer/batch-reject', sessionIds);
     return response.data;
   }
 }
