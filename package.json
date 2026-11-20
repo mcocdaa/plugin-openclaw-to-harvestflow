@@ -22,12 +22,12 @@
   },
   "dependencies": {
     "@sinclair/typebox": "^0.34.52",
-    "axios": "^1.20.0",
-    "openclaw": "^2026.9.4",
+    "axios": "^1.21.0",
+    "openclaw": "^2026.10.7",
     "typebox": "^1.1.12"
   },
   "devDependencies": {
-    "@types/node": "^26.6.1",
+    "@types/node": "^26.6.5",
     "typescript": "^7.0.2"
   }
 }
